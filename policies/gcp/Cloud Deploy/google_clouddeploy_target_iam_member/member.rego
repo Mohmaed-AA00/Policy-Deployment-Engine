@@ -1,0 +1,21 @@
+package terraform.gcp.security.deploy.google_clouddeploy_target_iam_member.member
+import data.terraform.helpers
+import data.terraform.gcp.security.deploy.google_clouddeploy_target_iam_member.vars
+
+conditions := [
+    [
+    {"situation_description" : "IAM Member allows overly permissive access with allUsers or allAuthenticatedUsers",
+    "remedies":[ "Remove allUsers and allAuthenticatedUsers from members list",]},
+    {
+        "condition": "Cloud Deploy Target IAM member should not contain overly permissive members",
+        "attribute_path" : ["member"],
+        "values" : ["allUsers", "allAuthenticatedUsers"],
+        "policy_type" : "blacklist"
+    }
+    ]
+]
+
+result := helpers.get_multi_summary(conditions, vars.variables)
+
+message := result.message
+details := result.details
